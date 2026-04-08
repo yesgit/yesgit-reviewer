@@ -1,0 +1,11 @@
+Use $code-reviewer to review this diff in Chinese:
+
+diff --git a/app.py b/app.py
+--- a/app.py
++++ b/app.py
+@@ -1,2 +1,4 @@
+ def login(user, password):
+-    return check(user, password)
++    if user:
++        return True
++    return False

@@ -1,0 +1,15 @@
+Use $code-reviewer to review this commit in Chinese. Use the weighted scorecard.
+
+Commit message:
+fix: handle missing username during login
+
+Diff:
+diff --git a/auth.py b/auth.py
+--- a/auth.py
++++ b/auth.py
+@@ -1,2 +1,5 @@
+ def login(user, password):
+-    return check(user, password)
++    if not user:
++        return False
++    return check(user, password)

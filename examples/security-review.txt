@@ -1,0 +1,6 @@
+Use $code-reviewer to do a security-focused review of this code in English:
+
+import os
+
+def run(cmd):
+    os.system(cmd)

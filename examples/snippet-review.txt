@@ -1,0 +1,4 @@
+Use $code-reviewer to review this Python code in Chinese. Focus on correctness, edge cases, and maintainability.
+
+def divide(a, b):
+    return a / b
