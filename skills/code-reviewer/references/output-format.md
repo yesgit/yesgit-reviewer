@@ -71,3 +71,5 @@ For detailed commit, diff, PR/MR, or chunk-merged reviews, this expanded format 
 - If there are no material findings, say so under `Findings` and still include residual risk or uncertainty.
 - Keep findings concrete and concise.
 - Avoid speculative claims without stating uncertainty.
+- Localize section headings and field labels to match the user's language.
+- For Chinese output, prefer headings such as `总结`, `问题`, `风险评估`, `加权评分明细`, `总分`, and `优先建议`.

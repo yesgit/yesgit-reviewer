@@ -27,6 +27,25 @@ Preferred default labels:
 
 If the user wants fully localized output, localized labels are acceptable as long as the structure remains the same.
 
+## Section headings and score labels
+
+Section headings should normally follow the user's language as well.
+
+Recommended Chinese localization:
+- `Summary` -> `总结`
+- `Findings` -> `问题`
+- `Risk Assessment` -> `风险评估`
+- `Weighted Scorecard` -> `加权评分明细`
+- `Total Score` -> `总分`
+- `Top Recommendations` -> `优先建议`
+
+Recommended Chinese field labels:
+- `Overall risk` -> `整体风险`
+- `Confidence` -> `置信度`
+- `Main uncertainty` -> `主要不确定性`
+
+If the response body is Chinese, do not leave these section headers in English unless the user explicitly asks for bilingual output.
+
 ## Mixed-language repositories
 
 When repository comments, docs, and identifiers mix Chinese and English:
