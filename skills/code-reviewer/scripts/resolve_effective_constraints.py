@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import fnmatch
 import json
 from pathlib import Path
 from typing import List
@@ -11,6 +12,7 @@ from typing import List
 
 FILENAMES = {
     "README.md",
+    "README.txt",
     "ARCHITECTURE.md",
     "DESIGN.md",
     "CONTRIBUTING.md",
@@ -19,6 +21,22 @@ FILENAMES = {
     "AGENTS.md",
     ".cursorrules",
 }
+TEXT_EXTENSIONS = {".md", ".mdx", ".txt", ".rst", ".adoc", ".yaml", ".yml", ".json", ".toml"}
+SCOPED_DIR_NAMES = {"docs", "doc", "design", "architecture", "spec", "standards", "policies", "rules", "instructions"}
+
+
+def is_text_rule_file(path: Path) -> bool:
+    return path.is_file() and path.suffix.lower() in TEXT_EXTENSIONS
+
+
+def collect_scoped_rule_files(repo_root: Path, cursor: Path) -> List[Path]:
+    candidates: List[Path] = []
+    for dirname in sorted(SCOPED_DIR_NAMES):
+        scoped_dir = cursor / dirname
+        if scoped_dir.is_dir():
+            for candidate in sorted(p for p in scoped_dir.rglob("*") if is_text_rule_file(p)):
+                candidates.append(candidate)
+    return candidates
 
 
 def collect_candidates(root: Path, current: Path) -> List[dict]:
@@ -43,9 +61,18 @@ def collect_candidates(root: Path, current: Path) -> List[dict]:
                     }
                 )
 
+        for candidate in collect_scoped_rule_files(repo_root, cursor):
+            results.append(
+                {
+                    "path": candidate.relative_to(repo_root).as_posix(),
+                    "scope_path": cursor.relative_to(repo_root).as_posix() or ".",
+                    "precedence": len(results) + 1,
+                }
+            )
+
         cursor_rules = cursor / ".cursor" / "rules"
         if cursor_rules.is_dir():
-            for candidate in sorted(p for p in cursor_rules.rglob("*") if p.is_file()):
+            for candidate in sorted(p for p in cursor_rules.rglob("*") if is_text_rule_file(p)):
                 results.append(
                     {
                         "path": candidate.relative_to(repo_root).as_posix(),

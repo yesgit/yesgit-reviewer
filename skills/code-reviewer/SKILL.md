@@ -49,6 +49,8 @@ For architecture and standards review, also read:
 - [references/violation-severity.md](references/violation-severity.md)
 - [references/codebase-baseline.md](references/codebase-baseline.md)
 - [references/design-inference-review.md](references/design-inference-review.md)
+Treat explicit documented rules as stronger than inferred repository conventions.
+When discovering rule sources, prioritize readable text-based policy files rather than arbitrary artifacts.
 
 ## Review workflow
 
@@ -58,9 +60,9 @@ For architecture and standards review, also read:
 4. If the diff is noisy or too large, use:
    - `scripts/normalize_diff.py` to remove low-value noise
    - `scripts/split_diff.py` to split the diff into smaller chunks
-   - `scripts/discover_constraints.py` to locate architecture and policy files
-   - `scripts/resolve_effective_constraints.py` to determine which rules apply to a target path
-   - `scripts/infer_design_constraints.py` to infer baseline patterns from existing code when explicit docs are incomplete
+   - `scripts/discover_constraints.py` to locate readable architecture and policy files
+   - `scripts/resolve_effective_constraints.py` to determine which explicit rules apply to a target path
+   - `scripts/infer_design_constraints.py` to infer baseline patterns from existing code only when explicit docs are incomplete
 5. Review each chunk for correctness, security, maintainability, performance, testing, and operational risk.
 6. If multiple chunk-level reviews exist, use `scripts/summarize_findings.py` or equivalent reasoning to merge them.
 7. Score the change using [references/scoring.md](references/scoring.md). If the user asks for a detailed scorecard or if the review is chunked, prefer the weighted 100-point profile.
@@ -76,6 +78,8 @@ For architecture and standards review, also read:
 - Avoid style-only nitpicks unless they affect readability, correctness, or maintainability.
 - If the context is insufficient, say what is missing and how that limits confidence.
 - For security-focused reviews, prioritize exploitable issues and unsafe defaults.
+- For architecture and design reviews, prefer explicit policy sources over inferred codebase patterns.
+- Treat inferred design baselines as heuristics, not hard rules, unless repeated evidence is strong and no explicit policy contradicts them.
 
 ## Output requirements
 

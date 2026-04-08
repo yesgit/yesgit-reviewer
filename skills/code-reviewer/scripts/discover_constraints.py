@@ -7,7 +7,7 @@ import argparse
 import fnmatch
 import json
 from pathlib import Path
-from typing import Iterable, List
+from typing import List
 
 
 PATTERNS = [
@@ -25,6 +25,7 @@ PATTERNS = [
 ]
 
 DIR_NAMES = {"docs", "doc", "design", "architecture", "spec", "standards", "policies", "rules", "instructions"}
+TEXT_EXTENSIONS = {".md", ".mdx", ".txt", ".rst", ".adoc", ".yaml", ".yml", ".json", ".toml"}
 
 
 def matches(path: Path, root: Path) -> bool:
@@ -33,9 +34,9 @@ def matches(path: Path, root: Path) -> bool:
         return True
     if rel in {".github/copilot-instructions.md"}:
         return True
-    if any(part in DIR_NAMES for part in path.parts[:-1]):
+    if any(part in DIR_NAMES for part in path.parts[:-1]) and path.suffix.lower() in TEXT_EXTENSIONS:
         return True
-    if ".cursor" in path.parts and "rules" in path.parts:
+    if ".cursor" in path.parts and "rules" in path.parts and path.suffix.lower() in TEXT_EXTENSIONS:
         return True
     return False
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Dict, Iterable, List
@@ -21,6 +22,28 @@ SOURCE_EXTENSIONS = {
     ".rb",
     ".php",
     ".cs",
+}
+LAYER_PATTERNS = {
+    "service": [
+        re.compile(r"\bservices?\b"),
+        re.compile(r"[./]services?[./]"),
+    ],
+    "repository": [
+        re.compile(r"\brepositories?\b"),
+        re.compile(r"\brepo\b"),
+        re.compile(r"\bdao\b"),
+        re.compile(r"[./](repositories?|repo|dao)[./]"),
+    ],
+    "controller": [
+        re.compile(r"\bcontrollers?\b"),
+        re.compile(r"[./]controllers?[./]"),
+    ],
+    "domain": [
+        re.compile(r"\bdomains?\b"),
+        re.compile(r"\bmodels?\b"),
+        re.compile(r"\bentities?\b"),
+        re.compile(r"[./](domain|models?|entities?)[./]"),
+    ],
 }
 
 
@@ -85,14 +108,9 @@ def infer(root: Path) -> Dict[str, object]:
 
         for imp in collect_imports(path):
             lowered = imp.lower()
-            if "service" in lowered:
-                imports_by_layer[layer]["service"] += 1
-            if "repo" in lowered or "repository" in lowered or "dao" in lowered:
-                imports_by_layer[layer]["repository"] += 1
-            if "controller" in lowered:
-                imports_by_layer[layer]["controller"] += 1
-            if "model" in lowered or "entity" in lowered or "domain" in lowered:
-                imports_by_layer[layer]["domain"] += 1
+            for inferred_layer, patterns in LAYER_PATTERNS.items():
+                if any(pattern.search(lowered) for pattern in patterns):
+                    imports_by_layer[layer][inferred_layer] += 1
 
     return {
         "root": root.as_posix(),
