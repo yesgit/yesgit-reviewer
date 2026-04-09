@@ -49,7 +49,9 @@ For architecture and standards review, also read:
 - [references/violation-severity.md](references/violation-severity.md)
 - [references/codebase-baseline.md](references/codebase-baseline.md)
 - [references/design-inference-review.md](references/design-inference-review.md)
+- [references/general-design-principles.md](references/general-design-principles.md)
 Treat explicit documented rules as stronger than inferred repository conventions.
+Treat generic design principles and Clean Code heuristics as advisory unless the repository explicitly adopts them.
 When discovering rule sources, prioritize readable text-based policy files rather than arbitrary artifacts.
 Treat project style and formatter or linter configuration files as explicit rule sources when they are readable and path-applicable.
 

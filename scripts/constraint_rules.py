@@ -56,6 +56,7 @@ SCOPED_DIR_NAMES = {
     "doc",
     "design",
     "architecture",
+    "references",
     "spec",
     "standards",
     "policies",

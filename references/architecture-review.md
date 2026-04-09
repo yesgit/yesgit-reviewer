@@ -6,11 +6,13 @@ Use this guide when the user asks whether code violates:
 - coding standards
 - repository policies
 - AI-tooling instructions
+- general design principles or code cleanliness expectations
 
 ## Goal
 
 Determine whether the change is inconsistent with the project's documented architecture or local directory-specific rules.
 This includes effective style, lint, formatter, and editor rules when the user asks about standards or coding conventions.
+If explicit project rules are incomplete, you may also use [general-design-principles.md](general-design-principles.md) as advisory maintainability guidance.
 
 ## Review model
 
@@ -56,3 +58,4 @@ When reporting a violation, include:
 
 If rules conflict, resolve them with [rule-precedence.md](rule-precedence.md).
 If the docs are ambiguous or contradictory, report that ambiguity as part of the findings.
+Do not report generic design principles as hard violations unless the repository explicitly adopts them.

@@ -15,6 +15,7 @@ Use these locations as likely sources of architecture, design, and standards rul
 - `doc/`
 - `design/`
 - `architecture/`
+- `references/`
 - `spec/`
 - `standards/`
 - `policies/`

@@ -21,6 +21,21 @@ def run_script(*args: str, cwd: Path | None = None) -> str:
 
 
 class ScriptTests(unittest.TestCase):
+    def test_discover_constraints_finds_reference_docs_in_skill_style_repo(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "SKILL.md").write_text("# skill\n", encoding="utf-8")
+            (root / "references").mkdir()
+            (root / "references" / "architecture-review.md").write_text("# rules\n", encoding="utf-8")
+            (root / "references" / "general-design-principles.md").write_text("# advisory\n", encoding="utf-8")
+
+            data = json.loads(run_script("scripts/discover_constraints.py", str(root)))
+            paths = {entry["path"] for entry in data}
+
+            self.assertIn("SKILL.md", paths)
+            self.assertIn("references/architecture-review.md", paths)
+            self.assertIn("references/general-design-principles.md", paths)
+
     def test_discover_constraints_finds_skill_and_style_files(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -48,6 +63,21 @@ class ScriptTests(unittest.TestCase):
 
             self.assertEqual(data[0]["path"], "src/.eslintrc.json")
             self.assertEqual(data[1]["path"], ".editorconfig")
+
+    def test_resolve_effective_constraints_includes_reference_docs_from_repo_root(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "SKILL.md").write_text("# skill\n", encoding="utf-8")
+            (root / "references").mkdir()
+            (root / "references" / "architecture-review.md").write_text("# rules\n", encoding="utf-8")
+            (root / "src").mkdir()
+            (root / "src" / "index.ts").write_text("export const value = 1;\n", encoding="utf-8")
+
+            data = json.loads(run_script("scripts/resolve_effective_constraints.py", str(root), "src/index.ts"))
+            paths = [entry["path"] for entry in data]
+
+            self.assertIn("SKILL.md", paths)
+            self.assertIn("references/architecture-review.md", paths)
 
     def test_infer_design_constraints_recognizes_non_python_imports(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
