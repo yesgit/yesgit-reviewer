@@ -48,6 +48,10 @@ For detailed commit, diff, PR/MR, or chunk-merged reviews, this expanded format 
 ## Findings
 ...
 
+## Location Index
+- <file or area>: <important finding ids, symbols, or line ranges>
+- <file or area>: <important finding ids, symbols, or line ranges>
+
 ## Weighted Scorecard
 - Correctness and robustness: XX/40
 - Security and risk exposure: XX/30
@@ -71,5 +75,9 @@ For detailed commit, diff, PR/MR, or chunk-merged reviews, this expanded format 
 - If there are no material findings, say so under `Findings` and still include residual risk or uncertainty.
 - Keep findings concrete and concise.
 - Avoid speculative claims without stating uncertainty.
+- For chunk-merged or multi-agent reviews, keep `Findings` organized by severity as the primary view.
+- For chunk-merged or multi-agent reviews, add a short `Location Index` after `Findings` so users can quickly map issues back to files, symbols, chunks, or line ranges.
+- Prefer precise file paths and 1-based line references when available.
+- Do not dump raw per-agent or per-chunk notes into the final answer.
 - Localize section headings and field labels to match the user's language.
 - For Chinese output, prefer headings such as `总结`, `问题`, `风险评估`, `加权评分明细`, `总分`, and `优先建议`.

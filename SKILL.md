@@ -56,18 +56,37 @@ When discovering rule sources, prioritize readable text-based policy files rathe
 
 1. Identify the review scope and the likely intent of the change.
 2. Read the matching scenario reference for the input type.
-3. Apply the baseline checklist and note missing context explicitly instead of guessing.
-4. If the diff is noisy or too large, use:
+3. Decide whether to review serially or use a multi-agent chunked review:
+   - prefer serial review for snippets, single files, or small diffs
+   - prefer multi-agent review for large diffs, multi-file PRs/MRs, mixed backend and frontend changes, or requests that combine multiple lenses such as security plus architecture
+   - if the runtime does not support subagents, keep the same workflow but execute it serially
+4. Apply the baseline checklist and note missing context explicitly instead of guessing.
+5. If the diff is noisy or too large, use:
    - `scripts/normalize_diff.py` to remove low-value noise
    - `scripts/split_diff.py` to split the diff into smaller chunks
    - `scripts/discover_constraints.py` to locate readable architecture and policy files
    - `scripts/resolve_effective_constraints.py` to determine which explicit rules apply to a target path
    - `scripts/infer_design_constraints.py` to infer baseline patterns from existing code only when explicit docs are incomplete
-5. Review each chunk for correctness, security, maintainability, performance, testing, and operational risk.
-6. If multiple chunk-level reviews exist, use `scripts/summarize_findings.py` or equivalent reasoning to merge them.
-7. Score the change using [references/scoring.md](references/scoring.md). If the user asks for a detailed scorecard or if the review is chunked, prefer the weighted 100-point profile.
-8. Format the answer exactly as defined in [references/output-format.md](references/output-format.md).
-9. Match the user's language unless they request a different one explicitly.
+6. For multi-agent review, split work into disjoint chunks by file groups, directories, or concern areas. Keep each chunk self-contained enough that one reviewer can inspect it without depending heavily on another chunk.
+7. Give every subagent the same review objective, applicable constraints, and required output contract. Each subagent should report only concrete findings for its assigned chunk and should not attempt to produce the final merged review.
+8. Review each chunk for correctness, security, maintainability, performance, testing, and operational risk.
+9. If multiple chunk-level reviews exist, use `scripts/summarize_findings.py` or equivalent reasoning to merge them. Follow [references/batch-summary-protocol.md](references/batch-summary-protocol.md) when merging chunk or subagent results.
+10. Score the change using [references/scoring.md](references/scoring.md). If the user asks for a detailed scorecard or if the review is chunked, prefer the weighted 100-point profile.
+11. Format the answer exactly as defined in [references/output-format.md](references/output-format.md).
+12. Match the user's language unless they request a different one explicitly.
+
+## Multi-agent rules
+
+- Do not require the user to opt in explicitly. Auto-select multi-agent review when the scope justifies it.
+- Do not use subagents for tiny or obvious reviews where dispatch overhead exceeds the likely gain.
+- Split by disjoint ownership when possible to reduce duplicate findings.
+- If the user asks for a specific focus such as security or architecture, either assign one specialized pass to that focus or apply that lens consistently across all chunks.
+- Give subagents only the chunk-local context plus the minimum global context they need, such as the review goal, severity rubric, and explicit repository rules.
+- Require subagents to output findings using the same fields as the final review: location, issue, impact, recommendation, and severity.
+- Require subagents to mark uncertainty explicitly instead of guessing across chunk boundaries.
+- The primary reviewer must deduplicate overlapping findings, resolve severity conflicts, and produce one final score for the whole change.
+- Never average chunk scores mechanically. Recompute the overall score after consolidation.
+- If a bug spans multiple chunks, keep one canonical finding in the final report and mention affected areas in the location or impact text.
 
 ## Review rules
 
