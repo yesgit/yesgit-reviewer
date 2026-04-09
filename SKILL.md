@@ -1,9 +1,9 @@
 ---
-name: code-reviewer
+name: yesgit-reviewer
 description: Review code snippets, files, diffs, commits, PR/MR changes, architecture and standards violations, and design drift from existing code conventions. Use when the user asks for code review, diff review, commit review, PR review, MR review, architecture review, standards review, design review, or security-focused review.
 ---
 
-# Code Reviewer
+# YesGit Code Reviewer
 
 ## When to use
 

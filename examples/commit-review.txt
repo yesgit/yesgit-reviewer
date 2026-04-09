@@ -1,4 +1,4 @@
-Use $code-reviewer to review this commit in Chinese. Use the weighted scorecard.
+Use $yesgit-reviewer to review this commit in Chinese. Use the weighted scorecard.
 
 Commit message:
 fix: handle missing username during login

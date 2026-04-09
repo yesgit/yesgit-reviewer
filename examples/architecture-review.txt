@@ -1,4 +1,4 @@
-Use $code-reviewer to review whether this change violates project architecture, design, or local coding rules.
+Use $yesgit-reviewer to review whether this change violates project architecture, design, or local coding rules.
 
 Before reviewing the code, inspect rule sources in:
 - README.md

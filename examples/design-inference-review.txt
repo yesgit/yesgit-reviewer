@@ -1,4 +1,4 @@
-Use $code-reviewer to infer the current design conventions from the existing codebase, then review whether this change drifts from those conventions.
+Use $yesgit-reviewer to infer the current design conventions from the existing codebase, then review whether this change drifts from those conventions.
 
 When explicit docs are incomplete:
 - inspect old code structure

@@ -1,7 +1,7 @@
 interface:
-  display_name: "Code Reviewer"
+  display_name: "YesGit Code Reviewer"
   short_description: "Structured review for code, diff, commit, PR/MR, and architecture changes"
-  default_prompt: "Use $code-reviewer to review this code, diff, commit, PR/MR, or architecture change. Respond in the user's language unless they ask for another one."
+  default_prompt: "Use $yesgit-reviewer to review this code, diff, commit, PR/MR, or architecture change. Respond in the user's language unless they ask for another one."
 
 policy:
   allow_implicit_invocation: true
