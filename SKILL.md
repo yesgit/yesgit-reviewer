@@ -14,6 +14,7 @@ Use this skill when the user asks to:
 - review a pull request or merge request
 - review architecture, design, or coding-standard violations
 - focus on security, correctness, maintainability, performance, or testing risks
+- do a quick review, fast review, lightweight review, or pre-commit sanity check
 
 ## Input classification
 
@@ -23,6 +24,10 @@ First classify the input before reviewing:
 - commit-level review
 - pull request or merge request review
 - security-focused review
+
+Then decide the review depth:
+- quick review
+- standard review
 
 Read [references/input-modes.md](references/input-modes.md), then load the matching reference:
 - code snippet or file: [references/snippet-review.md](references/snippet-review.md)
@@ -59,26 +64,32 @@ Treat project style and formatter or linter configuration files as explicit rule
 
 1. Identify the review scope and the likely intent of the change.
 2. Read the matching scenario reference for the input type.
-3. Decide whether to review serially or use a multi-agent chunked review:
+3. Decide whether this should be a quick review or a standard review:
+   - use quick review when the user explicitly asks for a fast pass or when the task clearly calls for a compact, decision-oriented triage
+   - quick review is a high-signal triage pass, not a claim of exhaustive coverage
+   - in quick review, prioritize correctness, obvious regressions, missing tests, and direct security risk
+   - in quick review, avoid deep architecture inference, large-scale cross-file reasoning, or style-only feedback unless it materially affects risk
+   - if the user asks for merge readiness, architecture review, standards enforcement, or deeper assurance, upgrade to standard review explicitly
+4. Decide whether to review serially or use a multi-agent chunked review:
    - prefer serial review for snippets, single files, or small diffs
    - prefer multi-agent review for large diffs, multi-file PRs/MRs, mixed backend and frontend changes, or requests that combine multiple lenses such as security plus architecture
    - if the runtime does not support subagents, keep the same workflow but execute it serially
-4. Apply the baseline checklist and note missing context explicitly instead of guessing.
-5. If the diff is noisy or too large, use:
+5. Apply the baseline checklist and note missing context explicitly instead of guessing.
+6. If the diff is noisy or too large, use:
    - `scripts/normalize_diff.py` to remove low-value noise
    - `scripts/split_diff.py` to split the diff into smaller chunks
    - `scripts/discover_constraints.py` to locate readable architecture and policy files
    - `scripts/resolve_effective_constraints.py` to determine which explicit rules apply to a target path
    - `scripts/infer_design_constraints.py` to infer baseline patterns from existing code only when explicit docs are incomplete
-6. During constraint discovery, explicitly check for project-local style, lint, formatter, and editor configuration that applies to the changed paths.
-7. If such configuration exists, review against it before falling back to inferred repository conventions or generic ecosystem defaults.
-8. For multi-agent review, split work into disjoint chunks by file groups, directories, or concern areas. Keep each chunk self-contained enough that one reviewer can inspect it without depending heavily on another chunk.
-9. Give every subagent the same review objective, applicable constraints, and required output contract. Each subagent should report only concrete findings for its assigned chunk and should not attempt to produce the final merged review.
-10. Review each chunk for correctness, security, maintainability, performance, testing, and operational risk.
-11. If multiple chunk-level reviews exist, use `scripts/summarize_findings.py` or equivalent reasoning to merge them. Follow [references/batch-summary-protocol.md](references/batch-summary-protocol.md) when merging chunk or subagent results.
-12. Score the change using [references/scoring.md](references/scoring.md). If the user asks for a detailed scorecard or if the review is chunked, prefer the weighted 100-point profile.
-13. Format the answer exactly as defined in [references/output-format.md](references/output-format.md).
-14. Match the user's language unless they request a different one explicitly.
+7. During constraint discovery, explicitly check for project-local style, lint, formatter, and editor configuration that applies to the changed paths.
+8. If such configuration exists, review against it before falling back to inferred repository conventions or generic ecosystem defaults.
+9. For multi-agent review, split work into disjoint chunks by file groups, directories, or concern areas. Keep each chunk self-contained enough that one reviewer can inspect it without depending heavily on another chunk.
+10. Give every subagent the same review objective, applicable constraints, and required output contract. Each subagent should report only concrete findings for its assigned chunk and should not attempt to produce the final merged review.
+11. Review each chunk for correctness, security, maintainability, performance, testing, and operational risk.
+12. If multiple chunk-level reviews exist, use `scripts/summarize_findings.py` or equivalent reasoning to merge them. Follow [references/batch-summary-protocol.md](references/batch-summary-protocol.md) when merging chunk or subagent results.
+13. Score the change using [references/scoring.md](references/scoring.md). If the user asks for a detailed scorecard or if the review is chunked, prefer the weighted 100-point profile.
+14. Format the answer exactly as defined in [references/output-format.md](references/output-format.md).
+15. Match the user's language unless they request a different one explicitly.
 
 ## Multi-agent rules
 
@@ -99,6 +110,7 @@ Treat project style and formatter or linter configuration files as explicit rule
 - Tie every substantial finding to a file, symbol, hunk, or behavior when possible.
 - Distinguish confirmed bugs from uncertain risks.
 - Call out missing tests when behavior changes are not covered.
+- In quick review, prefer reporting the top 1-3 highest-value findings over exhaustive enumeration.
 - Avoid style-only nitpicks unless they affect readability, correctness, or maintainability.
 - Prefer repository-local style and lint configuration over generic language-community preferences.
 - If no project-specific style rule exists, you may cite widely adopted ecosystem defaults as advisory guidance only, not as hard violations.
@@ -116,5 +128,10 @@ Every review should include:
 - an overall risk assessment
 - a score, using `1-10` for lightweight reviews or the weighted `0-100` scorecard when appropriate
 - the top 3 recommendations
+
+Quick review should also:
+- state that coverage is intentionally limited
+- keep the result compact and decision-oriented
+- upgrade to standard review when the change cannot be assessed safely from local context
 
 If there are no material findings, state that explicitly and mention any residual uncertainty or test coverage gaps.

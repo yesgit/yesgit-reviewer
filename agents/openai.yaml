@@ -1,7 +1,7 @@
 interface:
   display_name: "DuckCodeReviewer"
-  short_description: "Structured review for code, diff, commit, PR/MR, and architecture changes"
-  default_prompt: "Use $DuckCodeReviewer to review this code, diff, commit, PR/MR, or architecture change. Respond in the user's language unless they ask for another one."
+  short_description: "Structured review for code, diff, commit, PR/MR, architecture changes, and quick review passes"
+  default_prompt: "Use $DuckCodeReviewer to review or quickly review this code, diff, commit, PR/MR, or architecture change. Respond in the user's language unless they ask for another one."
 
 policy:
   allow_implicit_invocation: true

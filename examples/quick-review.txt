@@ -1,0 +1,11 @@
+Use $DuckCodeReviewer to do a quick review of this diff in Chinese. Keep it compact, focus on correctness and obvious regressions, and mention that the review is not exhaustive.
+
+diff --git a/app.py b/app.py
+--- a/app.py
++++ b/app.py
+@@ -1,2 +1,4 @@
+ def login(user, password):
+-    return check(user, password)
++    if user:
++        return True
++    return False

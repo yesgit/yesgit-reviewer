@@ -7,6 +7,7 @@ This skill supports two scoring modes:
 ## When to use each mode
 
 - Use `1-10` for lightweight snippet reviews or fast review passes.
+- Use `1-10` by default for quick review mode.
 - Use `0-100` when the user asks for detailed scoring, when reviewing commits or diffs with explicit history, or when merging chunk-level reviews.
 
 ## Compact method
@@ -19,6 +20,10 @@ Suggested deductions:
 - Low severity confirmed defect: `-1` each
 - Significant missing tests for behavior-changing code: `-1` to `-2`
 - Major uncertainty due to missing context: `-1`
+
+Quick review notes:
+- Keep the score aligned to the limited scope of the pass.
+- If the change needs standard review to judge safely, say so and lower confidence rather than pretending the compact score is authoritative.
 
 ## Compact interpretation
 

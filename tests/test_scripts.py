@@ -21,6 +21,22 @@ def run_script(*args: str, cwd: Path | None = None) -> str:
 
 
 class ScriptTests(unittest.TestCase):
+    def test_quick_review_mode_is_documented_consistently(self) -> None:
+        skill = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")
+        input_modes = (REPO_ROOT / "references" / "input-modes.md").read_text(encoding="utf-8")
+        output_format = (REPO_ROOT / "references" / "output-format.md").read_text(encoding="utf-8")
+        scoring = (REPO_ROOT / "references" / "scoring.md").read_text(encoding="utf-8")
+        agent = (REPO_ROOT / "agents" / "openai.yaml").read_text(encoding="utf-8")
+
+        self.assertIn("quick review", skill)
+        self.assertIn("compact, decision-oriented triage", skill)
+        self.assertIn("### Quick review", input_modes)
+        self.assertIn("high-signal findings rather than exhaustive coverage", input_modes)
+        self.assertIn("Coverage note: quick review, not exhaustive", output_format)
+        self.assertIn("Use `1-10` by default for quick review mode.", scoring)
+        self.assertIn("quick review passes", agent)
+        self.assertIn("review or quickly review", agent)
+
     def test_discover_constraints_finds_reference_docs_in_skill_style_repo(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
