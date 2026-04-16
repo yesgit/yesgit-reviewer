@@ -1,0 +1,15 @@
+{
+  "name": "duck-code-reviewer",
+  "version": "1.0.0",
+  "type": "skill",
+  "description": "Code review skill for Claude Code",
+  "author": "yestion",
+  "repository": "https://github.com/yesgit/duck-code-reviewer",
+  "keywords": [
+    "code-review",
+    "security",
+    "architecture",
+    "design-review",
+    "standards"
+  ]
+}

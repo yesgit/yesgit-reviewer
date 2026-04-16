@@ -1,0 +1,17 @@
+{
+  "name": "duck-code-reviewer",
+  "description": "Code review skill for Claude Code - review snippets, diffs, commits, PRs/MRs with security, architecture, and standards focus",
+  "author": {
+    "name": "yestion"
+  },
+  "homepage": "https://github.com/yesgit/duck-code-reviewer",
+  "repository": "https://github.com/yesgit/duck-code-reviewer",
+  "license": "MIT",
+  "keywords": [
+    "code-review",
+    "security",
+    "architecture",
+    "design-review",
+    "standards"
+  ]
+}

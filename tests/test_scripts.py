@@ -7,6 +7,8 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+SKILL_ROOT = REPO_ROOT / "skills" / "duck-code-reviewer"
+SCRIPT_ROOT = SKILL_ROOT / "scripts"
 
 
 def run_script(*args: str, cwd: Path | None = None) -> str:
@@ -20,13 +22,28 @@ def run_script(*args: str, cwd: Path | None = None) -> str:
     return completed.stdout
 
 
+def skill_script(name: str) -> str:
+    return str(SCRIPT_ROOT / name)
+
+
 class ScriptTests(unittest.TestCase):
+    def test_packaged_skill_is_self_contained(self) -> None:
+        skill_root = SKILL_ROOT
+        skill = (skill_root / "SKILL.md").read_text(encoding="utf-8")
+        agent = (skill_root / "agents" / "openai.yaml").read_text(encoding="utf-8")
+
+        self.assertIn("name: duck-code-reviewer", skill)
+        self.assertNotIn("../../references", skill)
+        self.assertTrue((skill_root / "references" / "input-modes.md").is_file())
+        self.assertTrue((skill_root / "scripts" / "normalize_diff.py").is_file())
+        self.assertIn("quick review passes", agent)
+
     def test_quick_review_mode_is_documented_consistently(self) -> None:
         skill = (REPO_ROOT / "SKILL.md").read_text(encoding="utf-8")
-        input_modes = (REPO_ROOT / "references" / "input-modes.md").read_text(encoding="utf-8")
-        output_format = (REPO_ROOT / "references" / "output-format.md").read_text(encoding="utf-8")
-        scoring = (REPO_ROOT / "references" / "scoring.md").read_text(encoding="utf-8")
-        agent = (REPO_ROOT / "agents" / "openai.yaml").read_text(encoding="utf-8")
+        input_modes = (SKILL_ROOT / "references" / "input-modes.md").read_text(encoding="utf-8")
+        output_format = (SKILL_ROOT / "references" / "output-format.md").read_text(encoding="utf-8")
+        scoring = (SKILL_ROOT / "references" / "scoring.md").read_text(encoding="utf-8")
+        agent = (SKILL_ROOT / "agents" / "openai.yaml").read_text(encoding="utf-8")
 
         self.assertIn("quick review", skill)
         self.assertIn("compact, decision-oriented triage", skill)
@@ -45,7 +62,7 @@ class ScriptTests(unittest.TestCase):
             (root / "references" / "architecture-review.md").write_text("# rules\n", encoding="utf-8")
             (root / "references" / "general-design-principles.md").write_text("# advisory\n", encoding="utf-8")
 
-            data = json.loads(run_script("scripts/discover_constraints.py", str(root)))
+            data = json.loads(run_script(skill_script("discover_constraints.py"), str(root)))
             paths = {entry["path"] for entry in data}
 
             self.assertIn("SKILL.md", paths)
@@ -60,7 +77,7 @@ class ScriptTests(unittest.TestCase):
             (root / "src").mkdir()
             (root / "src" / ".eslintrc.json").write_text("{}", encoding="utf-8")
 
-            data = json.loads(run_script("scripts/discover_constraints.py", str(root)))
+            data = json.loads(run_script(skill_script("discover_constraints.py"), str(root)))
             paths = {entry["path"] for entry in data}
 
             self.assertIn("SKILL.md", paths)
@@ -75,7 +92,7 @@ class ScriptTests(unittest.TestCase):
             (root / "src" / ".eslintrc.json").write_text("{}", encoding="utf-8")
             (root / "src" / "index.ts").write_text("export const value = 1;\n", encoding="utf-8")
 
-            data = json.loads(run_script("scripts/resolve_effective_constraints.py", str(root), "src/index.ts"))
+            data = json.loads(run_script(skill_script("resolve_effective_constraints.py"), str(root), "src/index.ts"))
 
             self.assertEqual(data[0]["path"], "src/.eslintrc.json")
             self.assertEqual(data[1]["path"], ".editorconfig")
@@ -89,7 +106,7 @@ class ScriptTests(unittest.TestCase):
             (root / "src").mkdir()
             (root / "src" / "index.ts").write_text("export const value = 1;\n", encoding="utf-8")
 
-            data = json.loads(run_script("scripts/resolve_effective_constraints.py", str(root), "src/index.ts"))
+            data = json.loads(run_script(skill_script("resolve_effective_constraints.py"), str(root), "src/index.ts"))
             paths = [entry["path"] for entry in data]
 
             self.assertIn("SKILL.md", paths)
@@ -118,7 +135,7 @@ class ScriptTests(unittest.TestCase):
                 encoding="utf-8",
             )
 
-            data = json.loads(run_script("scripts/infer_design_constraints.py", str(root)))
+            data = json.loads(run_script(skill_script("infer_design_constraints.py"), str(root)))
 
             self.assertEqual(data["import_tendencies"]["service"]["repository"], 2)
 
@@ -128,7 +145,7 @@ class ScriptTests(unittest.TestCase):
             review = root / "chunk.md"
             review.write_text("### High\n- Example\n", encoding="utf-8")
 
-            output = run_script("scripts/summarize_findings.py", "--lang", "zh", str(review))
+            output = run_script(skill_script("summarize_findings.py"), "--lang", "zh", str(review))
 
             self.assertIn("## 总结", output)
             self.assertIn("## 分块审查结果", output)

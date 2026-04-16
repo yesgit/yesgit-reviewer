@@ -29,32 +29,32 @@ Then decide the review depth:
 - quick review
 - standard review
 
-Read [references/input-modes.md](skills/duck-code-reviewer/references/input-modes.md), then load the matching reference:
-- code snippet or file: [references/snippet-review.md](skills/duck-code-reviewer/references/snippet-review.md)
-- diff or patch: [references/diff-review.md](skills/duck-code-reviewer/references/diff-review.md)
-- commit: [references/commit-review.md](skills/duck-code-reviewer/references/commit-review.md)
-- PR or MR: [references/pr-mr-review.md](skills/duck-code-reviewer/references/pr-mr-review.md)
-- GitHub pull request with repo metadata or `gh` context: [references/github-pr-review.md](skills/duck-code-reviewer/references/github-pr-review.md)
-- GitLab merge request with repo metadata or `glab` context: [references/gitlab-mr-review.md](skills/duck-code-reviewer/references/gitlab-mr-review.md)
-- architecture, design, or standards review: [references/architecture-review.md](skills/duck-code-reviewer/references/architecture-review.md)
-- design inference from existing code: [references/design-inference-review.md](skills/duck-code-reviewer/references/design-inference-review.md)
-- security-focused request: [references/security-review.md](skills/duck-code-reviewer/references/security-review.md)
+Read [references/input-modes.md](references/input-modes.md), then load the matching reference:
+- code snippet or file: [references/snippet-review.md](references/snippet-review.md)
+- diff or patch: [references/diff-review.md](references/diff-review.md)
+- commit: [references/commit-review.md](references/commit-review.md)
+- PR or MR: [references/pr-mr-review.md](references/pr-mr-review.md)
+- GitHub pull request with repo metadata or `gh` context: [references/github-pr-review.md](references/github-pr-review.md)
+- GitLab merge request with repo metadata or `glab` context: [references/gitlab-mr-review.md](references/gitlab-mr-review.md)
+- architecture, design, or standards review: [references/architecture-review.md](references/architecture-review.md)
+- design inference from existing code: [references/design-inference-review.md](references/design-inference-review.md)
+- security-focused request: [references/security-review.md](references/security-review.md)
 
-Always apply the baseline checklist in [references/review-checklist.md](skills/duck-code-reviewer/references/review-checklist.md), the scoring rules in [references/scoring.md](skills/duck-code-reviewer/references/scoring.md), and the output contract in [references/output-format.md](skills/duck-code-reviewer/references/output-format.md).
-Also follow [references/language-and-localization.md](skills/duck-code-reviewer/references/language-and-localization.md) for output language and [references/cross-platform.md](skills/duck-code-reviewer/references/cross-platform.md) for script portability expectations.
+Always apply the baseline checklist in [references/review-checklist.md](references/review-checklist.md), the scoring rules in [references/scoring.md](references/scoring.md), and the output contract in [references/output-format.md](references/output-format.md).
+Also follow [references/language-and-localization.md](references/language-and-localization.md) for output language and [references/cross-platform.md](references/cross-platform.md) for script portability expectations.
 When you need a stronger, opinionated review posture derived from the original platform prompts, also read:
-- [references/default-review-profile.md](skills/duck-code-reviewer/references/default-review-profile.md)
-- [references/review-styles.md](skills/duck-code-reviewer/references/review-styles.md)
-- [references/batch-summary-protocol.md](skills/duck-code-reviewer/references/batch-summary-protocol.md)
-- [references/customization.md](skills/duck-code-reviewer/references/customization.md)
+- [references/default-review-profile.md](references/default-review-profile.md)
+- [references/review-styles.md](references/review-styles.md)
+- [references/batch-summary-protocol.md](references/batch-summary-protocol.md)
+- [references/customization.md](references/customization.md)
 For architecture and standards review, also read:
-- [references/constraint-sources.md](skills/duck-code-reviewer/references/constraint-sources.md)
-- [references/ai-tooling-rules.md](skills/duck-code-reviewer/references/ai-tooling-rules.md)
-- [references/rule-precedence.md](skills/duck-code-reviewer/references/rule-precedence.md)
-- [references/violation-severity.md](skills/duck-code-reviewer/references/violation-severity.md)
-- [references/codebase-baseline.md](skills/duck-code-reviewer/references/codebase-baseline.md)
-- [references/design-inference-review.md](skills/duck-code-reviewer/references/design-inference-review.md)
-- [references/general-design-principles.md](skills/duck-code-reviewer/references/general-design-principles.md)
+- [references/constraint-sources.md](references/constraint-sources.md)
+- [references/ai-tooling-rules.md](references/ai-tooling-rules.md)
+- [references/rule-precedence.md](references/rule-precedence.md)
+- [references/violation-severity.md](references/violation-severity.md)
+- [references/codebase-baseline.md](references/codebase-baseline.md)
+- [references/design-inference-review.md](references/design-inference-review.md)
+- [references/general-design-principles.md](references/general-design-principles.md)
 Treat explicit documented rules as stronger than inferred repository conventions.
 Treat generic design principles and Clean Code heuristics as advisory unless the repository explicitly adopts them.
 When discovering rule sources, prioritize readable text-based policy files rather than arbitrary artifacts.
@@ -76,19 +76,19 @@ Treat project style and formatter or linter configuration files as explicit rule
    - if the runtime does not support subagents, keep the same workflow but execute it serially
 5. Apply the baseline checklist and note missing context explicitly instead of guessing.
 6. If the diff is noisy or too large, use:
-   - `skills/duck-code-reviewer/scripts/normalize_diff.py` to remove low-value noise
-   - `skills/duck-code-reviewer/scripts/split_diff.py` to split the diff into smaller chunks
-   - `skills/duck-code-reviewer/scripts/discover_constraints.py` to locate readable architecture and policy files
-   - `skills/duck-code-reviewer/scripts/resolve_effective_constraints.py` to determine which explicit rules apply to a target path
-   - `skills/duck-code-reviewer/scripts/infer_design_constraints.py` to infer baseline patterns from existing code only when explicit docs are incomplete
+   - `scripts/normalize_diff.py` to remove low-value noise
+   - `scripts/split_diff.py` to split the diff into smaller chunks
+   - `scripts/discover_constraints.py` to locate readable architecture and policy files
+   - `scripts/resolve_effective_constraints.py` to determine which explicit rules apply to a target path
+   - `scripts/infer_design_constraints.py` to infer baseline patterns from existing code only when explicit docs are incomplete
 7. During constraint discovery, explicitly check for project-local style, lint, formatter, and editor configuration that applies to the changed paths.
 8. If such configuration exists, review against it before falling back to inferred repository conventions or generic ecosystem defaults.
 9. For multi-agent review, split work into disjoint chunks by file groups, directories, or concern areas. Keep each chunk self-contained enough that one reviewer can inspect it without depending heavily on another chunk.
 10. Give every subagent the same review objective, applicable constraints, and required output contract. Each subagent should report only concrete findings for its assigned chunk and should not attempt to produce the final merged review.
 11. Review each chunk for correctness, security, maintainability, performance, testing, and operational risk.
-12. If multiple chunk-level reviews exist, use `skills/duck-code-reviewer/scripts/summarize_findings.py` or equivalent reasoning to merge them. Follow [references/batch-summary-protocol.md](skills/duck-code-reviewer/references/batch-summary-protocol.md) when merging chunk or subagent results.
-13. Score the change using [references/scoring.md](skills/duck-code-reviewer/references/scoring.md). If the user asks for a detailed scorecard or if the review is chunked, prefer the weighted 100-point profile.
-14. Format the answer exactly as defined in [references/output-format.md](skills/duck-code-reviewer/references/output-format.md).
+12. If multiple chunk-level reviews exist, use `scripts/summarize_findings.py` or equivalent reasoning to merge them. Follow [references/batch-summary-protocol.md](references/batch-summary-protocol.md) when merging chunk or subagent results.
+13. Score the change using [references/scoring.md](references/scoring.md). If the user asks for a detailed scorecard or if the review is chunked, prefer the weighted 100-point profile.
+14. Format the answer exactly as defined in [references/output-format.md](references/output-format.md).
 15. Match the user's language unless they request a different one explicitly.
 
 ## Multi-agent rules
